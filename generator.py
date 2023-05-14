@@ -14,13 +14,18 @@ class PasswordGenerator:
         self.passwords = []
 
     def generateUniquePasswords(self):
-        passwords = list(permutations(self.parameters))
-        for i in passwords:
-            password = ""
-            for j in i:
-                password += j
-                if password not in self.passwords:
-                    self.passwords.append(password)
+        if self.parameters != None:
+            passwords = list(permutations(self.parameters))
+        else:
+            for line in open(self.inputFile, "r"):
+                passwords = []
+                passwords.append(line)
+            for i in passwords:
+                password = ""
+                for j in i:
+                    password += j
+                    if password not in self.passwords:
+                        self.passwords.append(password)
 
         if self.enableCaseSensitivity:
             for p in range(len(self.passwords)):
@@ -38,8 +43,10 @@ class PasswordGenerator:
                         passwd += str(j)
                     self.passwords.append(passwd)
                     
-
-        print(len(self.passwords))
+        if self.outputFile != "":
+            out = open(self.outputFile, "+w")
+            for password in self.passwords:
+                out.write(password + "\n")
 
     def getCommandLineArguments(self):
         for i, arg in enumerate(sys.argv):
